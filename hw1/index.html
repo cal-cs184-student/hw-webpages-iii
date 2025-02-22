@@ -52,7 +52,7 @@
 			Without any optimization, I construct a bounding box by flooring the minimum (x, y)'s and ceiling the maximum (x, y)'s with which I use to construct my for loops. The bounding box approach ensures that only relevant pixels are checked, reducing unnecessary computations. Then I check the winding of my points by using the cross product. Next, I use the three line test to check if my sampled points (offset by 0.5 of course) are within my triangle. Finally, I run a few checks to make sure that my sampled points are within the bounds of the window (same way rasterize_point functions) and then use fill_pixel to rasterize the samped point. Here is an image of basic/test4.svg.
 		</p>
 		<p>The overall complexity remains proportional to the number of pixels within the bounding box, making it no worse than checking each sample within the bounding box of the triangle. </p>
-		<p>I added <code>std::chrono::high_resolution_clock::now();</code> to calculate the time taked for rasterizing each triangle. I moved all the math out from for loop to avoid repeat Repeat the calculations which help speed up a lot. </p>
+		<p>I added <code>std::chrono::high_resolution_clock::now();</code> to calculate the time taked for rasterizing each triangle. I moved all the math out from for loop to avoid repeat Repeat the calculations which help speed up 20% on average according to the time stamp calculations. </p>
 		<figure>
 			<img src="images/my_images/task1_test4.png" style="width:50%"/>
 			<figcaption>basic/test4.svg</figcaption>
