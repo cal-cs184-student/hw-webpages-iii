@@ -175,8 +175,8 @@ Here we compare direct lighting using 1 sample per pixel with two different meth
 <div style="display: flex; flex-direction: column; align-items: center;">
   <table style="width: 100%; text-align: center; border-collapse: collapse;">
     <tr>
-      <td><img src="part3/bunny_hemisphere_s1.png" width="400px"/><figcaption>Hemisphere Sampling (s = 1)</figcaption></td>
-      <td><img src="part3/bunny_importance_s1.png" width="400px"/><figcaption>Light Sampling (s = 1)</figcaption></td>
+      <td><img src="part3/CBbunny_hemisphere.png" width="400px"/><figcaption>Hemisphere Sampling (s = 1)</figcaption></td>
+      <td><img src="part3/CBbunny_importance.png" width="400px"/><figcaption>Light Sampling (s = 1)</figcaption></td>
     </tr>
   </table>
 </div>
@@ -194,6 +194,16 @@ In <code>sample_f</code>, we randomly sample an incoming light direction <code>w
 <p>
 In <code>at_least_one_bounce_radiance</code>, we implemented recursive path tracing. We start with <code>one_bounce_radiance</code> for direct lighting. If the ray’s depth allows, we use <code>bsdf->sample_f</code> to get a new direction <code>wi</code>, transform it to world coordinates, and trace a new ray. If the new ray hits an object, we recursively call <code>at_least_one_bounce_radiance</code> and accumulate the result scaled by the BSDF value, cosine of the incident angle, and inverse PDF. This builds up light from multiple bounces to simulate realistic indirect lighting.
 </p>
+
+<p>Here's Wall-E! Global illumination</p>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+    <tr>
+      <td><img src="part4/wall-e_screenshot_3-25_22-11-20.png" width="400px"/><figcaption>WALL-E</figcaption></td>
+    </tr>
+  </table>
+</div>
 
 <p>Here's some examples of the lambertian spheres under direct and indirect illumination</p>
 
