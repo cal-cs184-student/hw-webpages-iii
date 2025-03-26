@@ -274,29 +274,29 @@ Adaptive sampling is a method that helps reduce noise in rendered images without
 In my implementation inside <code>raytrace_pixel</code>, I sampled the pixel in small groups (batches) using <code>samplesPerBatch</code>. After each batch, I calculated the average and variance of the sample brightness using two running sums: one for the values and one for the squares of the values. I then computed a value <code>I</code>, which tells us how much the brightness could still vary. If <code>I</code> was small compared to the average brightness (based on the <code>maxTolerance</code>), I marked the pixel as converged and stopped adding more samples. Otherwise, I continued. I also updated <code>sampleCountBuffer</code> with the actual number of samples used for each pixel, so I could generate the sample rate heatmap. This let me visualize where more or fewer samples were needed across the image.
 </p>
 
-<h3>Scene 1: CBbunny.dae (2048 spp, 1 light sample, depth = 5)</h3>
+<h3>Scene 1: CBspheres.dae (2048 spp, 1 light sample, depth = 5)</h3>
 <table style="width: 100%; text-align: center;">
   <tr>
     <td>
-      <img src="part5/bunny.png" width="400px">
+      <img src="part4/spheres_1024_4_6_global.png" width="400px">
       <figcaption>Noise-free Render (Bunny)</figcaption>
     </td>
     <td>
-      <img src="part5/bunny_rate.png" width="400px">
+      <img src="part4/spheres_1024_4_6_global_rate.png" width="400px">
       <figcaption>Sample Rate Heatmap (Bunny)</figcaption>
     </td>
   </tr>
 </table>
 
-<h3>Scene 2: Bench.dae (2048 spp, 1 light sample, depth = 5)</h3>
+<h3>Scene 2: CBbunny.dae (2048 spp, 1 light sample, depth = 5)</h3>
 <table style="width: 100%; text-align: center;">
   <tr>
     <td>
-      <img src="part5/bench.png" width="400px">
+      <img src="part4/CBbunny_100bounces_rr.png" width="400px">
       <figcaption>Noise-free Render (Bench)</figcaption>
     </td>
     <td>
-      <img src="part5/bench_rate.png" width="400px">
+      <img src="part4/CBbunny_100bounces_rr_rate.png" width="400px">
       <figcaption>Sample Rate Heatmap (Bench)</figcaption>
     </td>
   </tr>
