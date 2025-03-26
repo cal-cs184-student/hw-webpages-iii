@@ -42,12 +42,6 @@
 
 		<br>
 
-		
-		<figure>
-			<img src="cornell.png" alt="Cornell Boxes with Bunnies" style="width:70%"/>
-			<figcaption>You can add images with captions!</figcaption>
-		</figure>
-
 		<!--
 		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
 		-->
@@ -201,9 +195,75 @@ In <code>sample_f</code>, we randomly sample an incoming light direction <code>w
 In <code>at_least_one_bounce_radiance</code>, we implemented recursive path tracing. We start with <code>one_bounce_radiance</code> for direct lighting. If the ray’s depth allows, we use <code>bsdf->sample_f</code> to get a new direction <code>wi</code>, transform it to world coordinates, and trace a new ray. If the new ray hits an object, we recursively call <code>at_least_one_bounce_radiance</code> and accumulate the result scaled by the BSDF value, cosine of the incident angle, and inverse PDF. This builds up light from multiple bounces to simulate realistic indirect lighting.
 </p>
 
+<p>Here's some examples of the lambertian spheres under direct and indirect illumination</p>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+    <tr>
+      <td><img src="part4/spheres_1024_4_6_direct.png" width="400px"/><figcaption>Spheres only DIRECT illumination</figcaption></td>
+      <td><img src="part4/sphares_indirect.png" width="400px"/><figcaption>Spheres only INDIRECT illumination</figcaption></td>
+    </tr>
+  </table>
+</div>
+
+<p>Here's our renderings of CBbunny.dae with unaccumulated and accumulated bounces with depths 0, 1, 2, 3, 4, and 5.</p>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+    <tr>
+      <td><img src="part4/CBbunny_0bounce.png" width="200px"/><figcaption>unaccumulated; max_depth_ray=0</figcaption></td>
+      <td><img src="part4/CBbunny_1bounce.png" width="200px"/><figcaption>unaccumulated; max_depth_ray=1</figcaption></td>
+      <td><img src="part4/CBbunny_2bounce.png" width="200px"/><figcaption>unaccumulated; max_depth_ray=2</figcaption></td>
+      <td><img src="part4/CBbunny_3bounce.png" width="200px"/><figcaption>unaccumulated; max_depth_ray=3</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce.png" width="200px"/><figcaption>unaccumulated; max_depth_ray=4</figcaption></td>
+      <td><img src="part4/CBbunny_5bounce.png" width="200px"/><figcaption>unaccumulated; max_depth_ray=5</figcaption></td>
+    </tr>
+    <tr>
+      <td><img src="part4/CBbunny_0bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=0</figcaption></td>
+      <td><img src="part4/CBbunny_1bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=1</figcaption></td>
+      <td><img src="part4/CBbunny_2bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=2</figcaption></td>
+      <td><img src="part4/CBbunny_3bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=3</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=4</figcaption></td>
+      <td><img src="part4/CBbunny_5bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=5</figcaption></td>
+    </tr>
+  </table>
+</div>
+
+<p>The 3rd bounce looks darker than the 2nd bounce which makes sense because light disperses, gets absorbed, etc. causing it to lose power and look "darker". In regards to how the final accumulated image looks, it is necessary that the bounces get darker so that the final render doesn't look infinitely bright.</p>
+
 <p>
-To improve efficiency, we integrated Russian Roulette into <code>at_least_one_bounce_radiance</code>. Rather than always tracing up to <code>max_ray_depth</code>, we randomly terminate rays with some probability after each bounce. This maintains an unbiased estimate while reducing computation for rays that contribute little to the final image.
+To improve efficiency, we integrated Russian Roulette into <code>at_least_one_bounce_radiance</code>. Rather than always tracing up to <code>max_ray_depth</code>, we randomly terminate rays with some probability after each bounce. This maintains an unbiased estimate while reducing computation for rays that contribute little to the final image. In the following, we show russian roulette rednerdings with different ray depths (1024 samples per pixel and 0.3 termination probability):
 </p>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+    <tr>
+      <td><img src="part4/CBbunny_0bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=0</figcaption></td>
+      <td><img src="part4/CBbunny_1bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=1</figcaption></td>
+      <td><img src="part4/CBbunny_2bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=2</figcaption></td>
+      <td><img src="part4/CBbunny_3bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=3</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_accum.png" width="200px"/><figcaption>accumulated; max_depth_ray=4</figcaption></td>
+      <td><img src="part4/CBbunny_100bounces_rr.png" width="200px"/><figcaption>accumulated; max_depth_ray=100</figcaption></td>
+    </tr>
+  </table>
+</div>
+
+<p>Here's our renderings with various sample-per-pixel rates, including 1, 2, 4, 8, 16, 64, and 1024 with 4 light rays and max ray depth of 4.</p>
+
+<div style="display: flex; flex-direction: column; align-items: center;">
+  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+    <tr>
+      <td><img src="part4/CBbunny_4bounce_1spp.png" width="200px"/><figcaption>sample-per-pixel-rate=1</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_2spp.png" width="200px"/><figcaption>sample-per-pixel-rate=2</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_4spp.png" width="200px"/><figcaption>sample-per-pixel-rate=4</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_8spp.png" width="200px"/><figcaption>sample-per-pixel-rate=8</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_16spp.png" width="200px"/><figcaption>sample-per-pixel-rate=16</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_64spp.png" width="200px"/><figcaption>sample-per-pixel-rate=64</figcaption></td>
+      <td><img src="part4/CBbunny_4bounce_1024spp.png" width="200px"/><figcaption>sample-per-pixel-rate=1024</figcaption></td>
+    </tr>
+  </table>
+</div>
+
 <h2>Part 5: Adaptive Sampling</h2>
 
 <p>
@@ -241,3 +301,50 @@ In my implementation inside <code>raytrace_pixel</code>, I sampled the pixel in 
     </td>
   </tr>
 </table>
+
+<h2>Part 6: Extra Credit</h2>
+
+<h3>Safe area heuristic for splitting BVH.</h3>
+
+<p>
+  In my BVH implementation, I recursively build the hierarchy in <code>construct_bvh(...)</code>. I begin by computing a bounding box that encloses all the primitives in the current range. If the number of primitives is less than or equal to <code>max_leaf_size</code>, I return a leaf node containing those primitives. Otherwise, I use a bucket-based Surface Area Heuristic (SAH) to decide the best way to split the node. I divide the bounding box into 60 buckets along both the x and y axes and assign primitives to buckets based on the centroid of their bounding boxes. For each potential split between buckets i and i+1, I calculate the SAH cost using:
+  </p>
+  
+  <pre>
+  cost = c_trav + count_left * SA_left + count_right * SA_right,
+  </pre>
+  
+  <p>
+  where <code>SA_left</code> and <code>SA_right</code> are the surface areas of the child bounding boxes. I select the axis and split that yields the lowest cost. If all primitives fall into a single bucket and no good split is found, I treat the node as a leaf to avoid infinite recursion. Otherwise, I partition the primitives using <code>std::partition</code> based on their centroid positions and recursively construct child BVH nodes.
+  </p>
+  
+  <p>
+  To accelerate ray intersection, I implemented <code>has_intersection(...)</code> and <code>intersect(...)</code>. In <code>has_intersection</code>, I first test whether the ray hits the node's bounding box using the <code>BBox::intersect(...)</code> function. If not, I return false. If the node is a leaf, I loop through all contained primitives and check if any of them intersect the ray using <code>has_intersection</code>. Since we can return early, this function is optimized for speed. In <code>intersect(...)</code>, I do a similar check, but store detailed intersection information (like the closest hit, surface normal, and material) by calling <code>intersect(ray, i)</code> on each primitive. For internal nodes, both functions recursively check the left and right children. The bounding box intersection function uses a slab method to compute intersection intervals along each axis and clamps them to determine if the ray hits the box. Together, this BVH structure and traversal logic greatly improve rendering efficiency by allowing early exits and pruning large regions of the scene that do not intersect with the ray.
+  </p>
+  
+  <div style="display: flex; flex-direction: column; align-items: center;">
+    <table style="width: 100%; text-align: center; border-collapse: collapse;">
+      <tr>
+        <td>
+          <img src="part2/maxplanck.png" width="400px" />
+          <figcaption>maxplanck.dae rendered with BVH acceleration</figcaption>
+        </td>
+        <td>
+          <img src="part2/lucy.png" width="400px" />
+          <figcaption>lucy.dae rendered with BVH acceleration</figcaption>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <img src="part2/cow.png" width="400px" />
+          <figcaption>cow.dae rendered with BVH acceleration</figcaption>
+        </td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+  
+  <p>
+  To compare performance, I rendered moderately complex scenes both with and without BVH acceleration. Without BVH, scenes with many triangles take significantly longer to render, as each ray must check against every primitive. With BVH, rays can quickly skip over large portions of the scene that are not relevant, resulting in much faster rendering. For example, the maxplanck and lucy scenes rendered in seconds with BVH, but took minutes without it. This shows how BVH dramatically improves rendering times by reducing unnecessary intersection tests and organizing the scene geometry efficiently.
+  </p>
+  
