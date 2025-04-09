@@ -32,11 +32,11 @@
 
 		<br>
 
-		Link to webpage: <a href="https://cal-cs184-student.github.io/hw-webpages-iii/hw4/index.html">cs184.eecs.berkeley.edu/sp25</a>
-
+		Link to webpage:  <a href="https://cal-cs184-student.github.io/hw-webpages-iii/hw4/">https://cal-cs184-student.github.io/hw-webpages-iii/hw4/</a>
+			
 		<br>
 
-		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw4-bibabo/tree/main">cs184.eecs.berkeley.edu/sp25</a>
+		Link to GitHub repository: <a href="https://github.com/cal-cs184-student/sp25-hw4-bibabo/tree/main">https://github.com/cal-cs184-student/sp25-hw4-bibabo/tree/main</a>
 
 		<!--
 		We've already added one heading per part, to make your write-up as navigable when grading. Please fit your write-up within these sections!
@@ -210,8 +210,178 @@
 		</div>
 
 		<h2>Part 5: Shaders</h2>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
+		<p>
+			A shader program is code that runs on the GPU and controls how objects appear on the screen. It usually has two parts: a vertex shader, which adjusts the position and surface data of each vertex, and a fragment shader, which colors each pixel on the surface. These shaders work together to create realistic lighting and materials.
+			</p>
+			
+			<p>
+			Diffuse shading simulates the soft lighting on matte surfaces. In the vertex shader, we transform the model-space position and normal vector into world space and pass them to the fragment shader. In the fragment shader, we apply the formula:
+			</p>
+			
+			<p style="margin-left: 2em;">
+			<code>L<sub>d</sub> = k<sub>d</sub> · (I / r²) · max(0, n · l)</code>
+			</p>
+			
+			<p>
+			Here, <code>k<sub>d</sub></code> is the diffuse coefficient (often set to 1), <code>I</code> is the light intensity, <code>r</code> is the distance from the light, <code>n</code> is the surface normal, and <code>l</code> is the light direction. This creates the effect where surfaces facing the light are brighter.
+			Ambient light – general light in the environment. Diffuse light – light scattered evenly from the surface (like Task 1). Specular light – shiny highlights from reflected light.
+		</p>
+			
+			<p>
+			Blinn-Phong shading extends diffuse lighting with ambient and specular reflections. The formula is:
+			</p>
+			
+			<p style="margin-left: 2em;">
+			<code>L = k<sub>a</sub>·I<sub>a</sub> + k<sub>d</sub>·(I / r²)·max(0, n · l) + k<sub>s</sub>·(I / r²)·max(0, n · h)<sup>p</sup></code>
+			</p>
+			
+			<p>
+			<code>k<sub>a</sub></code>, <code>k<sub>d</sub></code>, <code>k<sub>s</sub></code> are the ambient, diffuse, and specular coefficients. <code>I<sub>a</sub></code> is ambient light intensity. <code>h</code> is the halfway vector between the view and light directions, and <code>p</code> is the shininess exponent. This model gives realistic highlights and soft shading.
+			</p>
+			
+			<p>
+			Below are images showing the components of the Blinn-Phong model.
+			</p>
+			
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+				  <td>
+					<img src="part5/ambient.png" width="400px"/>
+					<figcaption>Ambient only</figcaption>
+				  </td>
+				  <td>
+					<img src="part5/diffuse.png" width="400px"/>
+					<figcaption>Diffuse only</figcaption>
+				  </td>
+				</tr>
+				<tr>
+				  <td>
+					<img src="part5/specular.png" width="400px"/>
+					<figcaption>Specular only</figcaption>
+				  </td>
+				  <td>
+					<img src="part5/blinn_phong_full.png" width="400px"/>
+					<figcaption>Full Blinn-Phong (ambient + diffuse + specular)</figcaption>
+				  </td>
+				</tr>
+			  </table>
+			</div>
+			
+			<p>
+			I applied a custom texture to my model by replacing the texture file with a new one from the textures directory. The mapping shows up correctly with the new pattern.
+			</p>
+			
+			<img src="part5/texture_mapping.png" width="600px" />
+			<figcaption>Custom texture mapped to model</figcaption>
+			
+			<p>
+				Bump Mapping perturbs the normal vectors in the fragment shader using a height map and TBN matrix. This creates the illusion of surface detail without altering geometry.
+			
+				Displacement Mapping actually modifies the vertex positions in the vertex shader, creating true 3D deformation. It depends on mesh resolution.</p>
+			
+			
+			<p>
+			Bump vs Displacement Mapping on spheres:
+			</p>
+			
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+				  <td>
+					<img src="part5/bump_16_1.png" width="400px"/>
+					<figcaption>Bump mapped (16x16 mesh)</figcaption>
+				  </td>
+				  <td>
+					<img src="part5/bump_128_1.png" width="400px"/>
+					<figcaption>Bump mapped (128x128 mesh)</figcaption>
+				  </td>
+				</tr>
+				<tr>
+				  <td>
+					<img src="part5/dis_16_1.png" width="400px"/>
+					<figcaption>Displacement mapped (16x16 mesh)</figcaption>
+				  </td>
+				  <td>
+					<img src="part5/dis_128_1.png" width="400px"/>
+					<figcaption>Displacement mapped (128x128 mesh)</figcaption>
+				  </td>
+				</tr>
+			  </table>
+			</div>
+			
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+				  <td>
+					<img src="part5/bump_16_1.png" width="400px"/>
+					<figcaption>Bump mapped (16x16 mesh)</figcaption>
+				  </td>
+				  <td>
+					<img src="part5/bump_128_1.png" width="400px"/>
+					<figcaption>Bump mapped (128x128 mesh)</figcaption>
+				  </td>
+				</tr>
+				<tr>
+					<td>
+					  <img src="part5/bump_16_2.png" width="400px"/>
+					  <figcaption>Bump mapped (16x16 mesh)</figcaption>
+					</td>
+					<td>
+					  <img src="part5/bump_128_2.png" width="400px"/>
+					  <figcaption>Bump mapped (128x128 mesh)</figcaption>
+					</td>
+				  </tr>
+			  </table>
+			</div>
+			
+			<p>
+			Bump mapping is smoother on low-res meshes because it doesn’t change geometry. Displacement mapping looks blocky on low-res but shows realistic 3D depth on high-res meshes. More detail shows. On 128x128, displacement shows strong depth while bump stays a visual illusion.
+			</p>
+			
+			
+			<div style="display: flex; flex-direction: column; align-items: center;">
+			  <table style="width: 100%; text-align: center; border-collapse: collapse;">
+				<tr>
+					<td>
+					  <img src="part5/dis_16_1.png" width="400px"/>
+					  <figcaption>Displacement mapped (16x16 mesh)</figcaption>
+					</td>
+					<td>
+					  <img src="part5/dis_128_1.png" width="400px"/>
+					  <figcaption>Displacement mapped (128x128 mesh)</figcaption>
+					</td>
+				  </tr>
+				<tr>
+					<td>
+					  <img src="part5/dis_16_2.png" width="400px"/>
+					  <figcaption>Displacement mapped (16x16 mesh)</figcaption>
+					</td>
+					<td>
+					  <img src="part5/dis_128_2.png" width="400px"/>
+					  <figcaption>Displacement mapped (128x128 mesh)</figcaption>
+					</td>
+				  </tr>
+			  </table>
+			</div>
+			
+			<p>
+				I also implemented a mirror shader.
+			</p>
+			<div style="display: flex; flex-direction: column; align-items: center;">
+				<table style="width: 100%; text-align: center; border-collapse: collapse;">
+				  <tr>
+					<td>
+					  <img src="part5/mirror.png" width="400px"/>
+					  <figcaption>Mirror effect on cloth</figcaption>
+					</td>
+					<td>
+					  <img src="part5/mirror_1.png" width="400px"/>
+					  <figcaption>Mirror effect on sphere</figcaption>
+					</td>
+				  </tr>
+				</table>
+			  </div>
 		</div>
 	</body>
 </html>
